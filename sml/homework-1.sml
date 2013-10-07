@@ -47,3 +47,32 @@ fun dates_in_month (dates: (int * int * int) list, month: int) =
 fun dates_in_months (dates: (int * int * int) list, months: int list) =
     if null months then []
     else dates_in_month(dates, hd months) @ dates_in_months(dates, tl months)
+
+(* 6. Write a function get_nth that takes a list of strings and an int n and returns
+ the nth element of the list where the head of the list is 1st. Do not worry about
+ the case where the list has too few elements: your function may apply hd or tl to
+ the empty list in this case, which is okay. *)
+fun get_nth (words : string list, n : int) =
+    if n = 1 then hd words
+    else get_nth(tl words, n - 1)
+
+(* 7. Write a function date_to_string that takes a date and returns a string of
+ the form January 20, 2013 (for example). Use the operator ^ for concatenating
+ strings and the library function Int.toString for converting an int to a string.
+ For producing the month part, do not use a bunch of conditionals. Instead, use
+ a list holding 12 strings and your answer to the previous problem. For consistency,
+ put a comma following the day and use capitalized English month names: January,
+ February, March, April, May, June, July, August, September, October, November, December. *)
+fun date_to_string (date: (int * int * int)) =
+    let val months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    in get_nth(months, #2 date) ^ " " ^ Int.toString(#3 date) ^ ", " ^ Int.toString(#1 date)
+    end
+
+(* 8. Write a function number_before_reaching_sum that takes an int called sum,
+ which you can assume is positive, and an int list, which you can assume contains
+ all positive numbers, and returns an int. You should return an int n such that
+ the first n elements of the list add to less than sum, but the first n + 1 elements
+ of the list add to sum or more. Assume the entire list sums to more than the passed in
+ value; it is okay for an exception to occur if this is not the case. *)
+fun number_before_reaching_sum (sum : int, nums : int list) =
+    0
