@@ -98,4 +98,16 @@ fun month_range (day1 : int, day2 : int) =
  (int*int*int) option. It evaluates to NONE if the list has no dates and SOME d
  if the date d is the oldest date in the list. *)
 fun oldest (dates : (int * int * int) list) =
-    SOME (2011,3,31)
+    if null dates then NONE
+    else
+        let fun oldest_helper (dates: (int * int * int) list) =
+            if null (tl dates) then hd dates
+            else
+               let val tail_oldest = oldest_helper(tl dates)
+               in
+                   if is_older(hd dates, tail_oldest) then hd dates
+                   else tail_oldest
+               end
+        in
+            SOME (oldest_helper(dates))
+        end

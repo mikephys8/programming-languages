@@ -38,3 +38,7 @@ val test10a = month_range(1, 1) = [1]
 val test10b = month_range(59, 60) = [2,3]
 
 val test11 = oldest([(2012,2,28),(2011,3,31),(2011,4,28)]) = SOME (2011,3,31)
+val test11a = oldest([]) = NONE
+val test11b = oldest([(1,2,3),(4,5,6),(7,8,9)]) = SOME (1,2,3)
+val test11c = oldest([(2011,3,31)]) = SOME (2011,3,31)
+val test11d = oldest([(2012,2,28),(2011,3,31),(2011,4,28),(2011, 2, 28)]) = SOME (2011,2,28)
