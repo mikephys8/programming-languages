@@ -9,6 +9,7 @@ val test1 = is_older((1,2,3),(2,3,4)) = true
 val test2 = number_in_month([(2012,2,28),(2013,12,1)],2) = 1
 
 val test3 = number_in_months([(2012,2,28),(2013,12,1),(2011,3,31),(2011,4,28)],[2,3,4]) = 3
+val test3a = number_in_months([(2012,2,28),(2013,12,1),(2011,3,31),(2011,4,28)],[2,3,3,4]) = 4
 
 val test4 = dates_in_month([(2012,2,28),(2013,12,1)],2) = [(2012,2,28)]
 
@@ -42,3 +43,14 @@ val test11a = oldest([]) = NONE
 val test11b = oldest([(1,2,3),(4,5,6),(7,8,9)]) = SOME (1,2,3)
 val test11c = oldest([(2011,3,31)]) = SOME (2011,3,31)
 val test11d = oldest([(2012,2,28),(2011,3,31),(2011,4,28),(2011, 2, 28)]) = SOME (2011,2,28)
+
+val test12 = number_in_months_challenge([(2012,2,28),(2013,12,1),(2011,3,31),(2011,4,28)],[2,3,3,4]) = 3
+
+val test13 = dates_in_months_challenge([(2012,2,28),(2013,12,1),(2011,3,31),(2011,4,28)],[2,2,3,3,4,4]) = [(2012,2,28),(2011,3,31),(2011,4,28)]
+
+val test_remove_duplicates = remove_duplicates([]) = []
+val test_remove_duplicates_a = remove_duplicates([1,2,3]) = [1,2,3]
+val test_remove_duplicates_b = remove_duplicates([1]) = [1]
+val test_remove_duplicates_c = remove_duplicates([1,1,1,1,1,1]) = [1]
+val test_remove_duplicates_d= remove_duplicates([1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6]) = [1,2,3,4,5,6]
+val test_remove_duplicates_e= remove_duplicates([1,2,3,3,3,3,3,3,3,3,3]) = [1,2,3]
