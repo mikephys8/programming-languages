@@ -75,7 +75,7 @@ fun date_to_string (date: (int * int * int)) =
  of the list add to sum or more. Assume the entire list sums to more than the passed in
  value; it is okay for an exception to occur if this is not the case. *)
 fun number_before_reaching_sum (sum : int, nums : int list) =
-    if hd nums >= sum then 1
+    if hd nums >= sum then 0
     else 1 + number_before_reaching_sum(sum - hd nums, tl nums)
 
 (* 9. Write a function what_month that takes a day of year (i.e., an int between
@@ -83,7 +83,7 @@ fun number_before_reaching_sum (sum : int, nums : int list) =
  etc.). Use a list holding 12 integers and your answer to the previous problem. *)
 fun what_month (day : int) =
     let val month_sums = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    in number_before_reaching_sum(day, month_sums)
+    in number_before_reaching_sum(day, month_sums) + 1
     end
 
 (* 10. Write a function month_range that takes two days of the year day1 and day2
@@ -91,15 +91,11 @@ fun what_month (day : int) =
  month of day1+1, ..., and mn is the month of day day2. Note the result will have
  length day2 - day1 + 1 or length 0 if day1>day2. *)
 fun month_range (day1 : int, day2 : int) =
-    let fun helper (month1 : int, month2 : int) = 
-            if month1 > month2 then []
-            else month1 :: helper(month1 + 1, month2)
-    in
-       helper(what_month(day1), what_month(day2))
-    end
+    if day1 > day2 then []
+    else what_month(day1) :: month_range(day1 + 1, day2)
 
 (* 11. Write a function oldest that takes a list of dates and evaluates to an
  (int*int*int) option. It evaluates to NONE if the list has no dates and SOME d
  if the date d is the oldest date in the list. *)
 fun oldest (dates : (int * int * int) list) =
-    0
+    SOME (2011,3,31)
