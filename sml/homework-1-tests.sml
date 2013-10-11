@@ -45,8 +45,7 @@ val test11c = oldest([(2011,3,31)]) = SOME (2011,3,31)
 val test11d = oldest([(2012,2,28),(2011,3,31),(2011,4,28),(2011, 2, 28)]) = SOME (2011,2,28)
 
 val test12 = number_in_months_challenge([(2012,2,28),(2013,12,1),(2011,3,31),(2011,4,28)],[2,3,3,4]) = 3
-
-val test13 = dates_in_months_challenge([(2012,2,28),(2013,12,1),(2011,3,31),(2011,4,28)],[2,2,3,3,4,4]) = [(2012,2,28),(2011,3,31),(2011,4,28)]
+val test12a = dates_in_months_challenge([(2012,2,28),(2013,12,1),(2011,3,31),(2011,4,28)],[2,2,3,3,4,4]) = [(2012,2,28),(2011,3,31),(2011,4,28)]
 
 val test_remove_duplicates = remove_duplicates([]) = []
 val test_remove_duplicates_a = remove_duplicates([1,2,3]) = [1,2,3]
@@ -54,3 +53,11 @@ val test_remove_duplicates_b = remove_duplicates([1]) = [1]
 val test_remove_duplicates_c = remove_duplicates([1,1,1,1,1,1]) = [1]
 val test_remove_duplicates_d= remove_duplicates([1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6]) = [1,2,3,4,5,6]
 val test_remove_duplicates_e= remove_duplicates([1,2,3,3,3,3,3,3,3,3,3]) = [1,2,3]
+
+val test13 = reasonable_date((2012,1,31))
+val test13a = reasonable_date((2,2,28))
+val test13b = reasonable_date((2000,2,29))
+val test13c = reasonable_date((2001,2,29)) = false
+val test13d = reasonable_date((2001,14,29)) = false
+val test13e = reasonable_date((~2001,1,29)) = false
+val test13f = reasonable_date((2001,14,50)) = false

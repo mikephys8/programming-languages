@@ -144,3 +144,7 @@ fun dates_in_months_challenge (dates: (int * int * int) list, months: int list) 
  are years that are either divisible by 400 or divisible by 4 but not divisible by 100.
  (Do not worry about days possibly lost in the conversion to the Gregorian calendar
  in the Late 1500s.) *)
+fun reasonable_date (date : (int * int * int)) =
+    (* let val month_sums = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] *)
+    if #1 date > 0 andalso #2 date > 0 andalso #2 date < 13 andalso #3 date > 0 andalso #3 date < 32 then true
+    else false
