@@ -144,7 +144,24 @@ fun dates_in_months_challenge (dates: (int * int * int) list, months: int list) 
  are years that are either divisible by 400 or divisible by 4 but not divisible by 100.
  (Do not worry about days possibly lost in the conversion to the Gregorian calendar
  in the Late 1500s.) *)
+fun get_days_in_month (month : int, year : int) =
+    if month = 2 andalso (year mod 400 = 0 orelse year mod 4 = 0 andalso not (year mod 100 = 0))
+    then 29
+    else
+        let val month_sums = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+            fun helper(cur_month: int, months: int list) =
+                if cur_month = 1 then hd months
+                else helper(cur_month -1, tl months)
+        in
+            helper(month, month_sums)
+        end
+
 fun reasonable_date (date : (int * int * int)) =
-    (* let val month_sums = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] *)
-    if #1 date > 0 andalso #2 date > 0 andalso #2 date < 13 andalso #3 date > 0 andalso #3 date < 32 then true
-    else false
+    let val year = #1 date; val month = #2 date; val day = #3 date in
+        if year > 0 andalso month > 0 andalso month < 13 andalso day > 0 andalso day < 32
+        then
+            if get_days_in_month(month, year) < day
+            then false
+            else true
+        else false
+    end
