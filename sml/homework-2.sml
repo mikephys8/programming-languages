@@ -39,8 +39,18 @@ Assume each list in substitutions has no repeats. The result will have repeats i
     (* answer: ["Jeffrey","Geoff","Jeffrey"] *)
 Use part (a) and ML's list-append (@) but no other helper functions. Sample solution
  is around 6 lines. *)
-fun get_substitutions1 (str_list : string list list, sub_str : string) =
-    []
+fun get_substitutions1 (substitutions : string list list, s : string) =
+    let fun get_substitutions (list_of_lists : string list list ) =
+            case list_of_lists of
+                [] => []
+                   | x::x' => let val result = all_except_option(s,x) in
+                                  case result of
+                                      NONE => get_substitutions(x')
+                                   | SOME str_list => str_list @ get_substitutions(x')
+                              end
+    in
+        get_substitutions(substitutions)
+    end
 
 (* you may assume that Num is always used with values 2, 3, ..., 10
    though it will not really come up *)

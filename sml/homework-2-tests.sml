@@ -8,7 +8,9 @@ val test1a = all_except_option("strings", ["strings", "are", "fun"]) = SOME ["ar
 val test1b = all_except_option("strings", ["fun", "are", "strings"]) = SOME ["fun", "are"]
 val test1c = all_except_option("strings", ["fun", "are"]) = NONE
 
-(* val test2 = get_substitutions1([["foo"],["there"]], "foo") = [] *)
+val test2 = get_substitutions1([["foo"],["there"]], "foo") = []
+val test2a = get_substitutions1([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]],"Fred") = ["Fredrick","Freddie","F"]
+val test2b = get_substitutions1([["Fred","Fredrick"],["Jeff","Jeffrey"],["Geoff","Jeff","Jeffrey"]],"Jeff") = ["Jeffrey","Geoff","Jeffrey"]
 
 (* val test3 = get_substitutions2([["foo"],["there"]], "foo") = [] *)
 
