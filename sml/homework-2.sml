@@ -15,26 +15,32 @@ fun same_string(s1 : string, s2 : string) =
  identical to the argument list except the string is not in it. You may assume the
  string is in the list at most once. Use same_string, provided to you, to compare
  strings. Sample solution is around 8 lines. *)
-fun all_except_option (str1 : string, str_list : string list) =
 
-    let fun exists (check_string : string, remaining_list: string list) =
+fun all_except_option (str1 : string, str_list : string list) =
+    let fun remove_from_list (str_to_remove, remaining_list) =
         case remaining_list of
-            [] => false
-         | x::x' => if same_string(x, check_string) then true
-                    else exists(check_string, x')
+            [] => []
+          | x :: x' => if same_string(x, str_to_remove) then x'
+                       else x :: remove_from_list(str_to_remove, x')
+        val filtered_list = remove_from_list(str1, str_list)
     in
-        if exists(str1, str_list) then
-            let fun remove_from_list (str_to_remove, remaining_list) =
-                case remaining_list of
-                    [] => []
-                 | x :: x' => if same_string(x, str_to_remove) then x'
-                              else x :: remove_from_list(str_to_remove, x')
-            in
-                SOME (remove_from_list(str1, str_list))
-            end
-        else NONE
+        if filtered_list = str_list then NONE else SOME filtered_list
     end
 
+(* (b) Write a function get_substitutions1, which takes a string list list
+ (a list of list of strings, the substitutions) and a string s and returns a string list.
+ The result has all the strings that are in some list in substitutions that also has s,
+ but s itself should not be in the result. Example:
+    get_substitutions1([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]],"Fred")
+    (* answer: ["Fredrick","Freddie","F"] *)
+Assume each list in substitutions has no repeats. The result will have repeats if
+ s and another string are both in more than one list in substitutions. Example:
+    get_substitutions1([["Fred","Fredrick"],["Jeff","Jeffrey"],["Geoff","Jeff","Jeffrey"]],"Jeff")
+    (* answer: ["Jeffrey","Geoff","Jeffrey"] *)
+Use part (a) and ML's list-append (@) but no other helper functions. Sample solution
+ is around 6 lines. *)
+fun get_substitutions1 (str_list : string list list, sub_str : string) =
+    []
 
 (* you may assume that Num is always used with values 2, 3, ..., 10
    though it will not really come up *)
