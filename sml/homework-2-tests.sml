@@ -2,7 +2,8 @@
 (* These are basic test cases. Passing these tests does not guarantee that your code will pass the actual homework grader *)
 (* To run the test, add a new line to the top of this file: use "homeworkname.sml"; *)
 (* All the tests should evaluate to true. For example, the REPL should say: val test1 = true : bool *)
-use "homework-2.sml"
+use "homework-2.sml";
+
 val test1 = all_except_option("string", ["string"]) = SOME []
 val test1a = all_except_option("strings", ["strings", "are", "fun"]) = SOME ["are", "fun"]
 val test1b = all_except_option("strings", ["fun", "are", "strings"]) = SOME ["fun", "are"]
@@ -12,7 +13,9 @@ val test2 = get_substitutions1([["foo"],["there"]], "foo") = []
 val test2a = get_substitutions1([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]],"Fred") = ["Fredrick","Freddie","F"]
 val test2b = get_substitutions1([["Fred","Fredrick"],["Jeff","Jeffrey"],["Geoff","Jeff","Jeffrey"]],"Jeff") = ["Jeffrey","Geoff","Jeffrey"]
 
-(* val test3 = get_substitutions2([["foo"],["there"]], "foo") = [] *)
+val test3 = get_substitutions2([["foo"],["there"]], "foo") = []
+val test3a = get_substitutions2([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]],"Fred") = ["Fredrick","Freddie","F"]
+val test3b = get_substitutions2([["Fred","Fredrick"],["Jeff","Jeffrey"],["Geoff","Jeff","Jeffrey"]],"Jeff") = ["Jeffrey","Geoff","Jeffrey"]
 
 (* val test4 = similar_names([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], {first="Fred", middle="W", last="Smith"}) = *)
 (* 	    [{first="Fred", last="Smith", middle="W"}, {first="Fredrick", last="Smith", middle="W"}, *)

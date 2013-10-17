@@ -40,17 +40,50 @@ Assume each list in substitutions has no repeats. The result will have repeats i
 Use part (a) and ML's list-append (@) but no other helper functions. Sample solution
  is around 6 lines. *)
 fun get_substitutions1 (substitutions : string list list, s : string) =
-    let fun get_substitutions (list_of_lists : string list list ) =
+    case substitutions of
+        [] => []
+           | x::x' => let val result = all_except_option(s,x) in
+                          case result of
+                              NONE => get_substitutions1(x', s)
+                                   | SOME str_list => str_list @ get_substitutions1(x', s)
+                      end
+
+(* (c) Write a function get_substitutions2, which is like get_substitutions1 except
+ it uses a tail-recursive local helper function.*)
+fun get_substitutions2 (substitutions : string list list, s : string) =
+    let fun get_substitutions (list_of_lists : string list list, matches_so_far : string list ) =
             case list_of_lists of
-                [] => []
+                [] => matches_so_far
                    | x::x' => let val result = all_except_option(s,x) in
                                   case result of
-                                      NONE => get_substitutions(x')
-                                   | SOME str_list => str_list @ get_substitutions(x')
+                                      NONE => get_substitutions(x', matches_so_far)
+                                   | SOME str_list => get_substitutions(x', matches_so_far @ str_list)
                               end
     in
-        get_substitutions(substitutions)
+        get_substitutions(substitutions, [])
     end
+
+(* (d) Write a function similar_names, which takes a string list list of substitutions
+ (as in parts (b) and (c)) and a full name of type {first:string,middle:string,last:string}
+ and returns a list of full names (type {first:string,middle:string,last:string} list)
+. The result is all the full names you can produce by substituting for the rst name
+ (and only the first name) using substitutions and parts (b) or (c). The answer should
+ begin with the original name (then have 0 or more other names). Example:
+    similar_names([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]],
+    {first="Fred", middle="W", last="Smith"})
+    (* answer: [{first="Fred", last="Smith", middle="W"},
+    {first="Fredrick", last="Smith", middle="W"},
+    {first="Freddie", last="Smith", middle="W"},
+    {first="F", last="Smith", middle="W"}] *)
+Do not eliminate duplicates from the answer. Hint: Use a local helper function. Sample solution is
+around 10 lines.
+*)
+(* fun similar_names (substitutions : string list list, full_name: {first: string, middle: string, last: string}) = *)
+(*     (* [full_name] *) *)
+(*     let fun getFirstName (name : {first=first, middle=middle, last=last}) = *)
+(*             case name of *)
+(*                 first(blah) => blah *)
+            
 
 (* you may assume that Num is always used with values 2, 3, ..., 10
    though it will not really come up *)
