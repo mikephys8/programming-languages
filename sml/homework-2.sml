@@ -146,3 +146,26 @@ fun all_same_color (cards : card list) =
      | first :: second :: rest => if card_color(first) = card_color(second)
                                   then all_same_color(second :: rest)
                                   else false
+
+(* (e) Write a function sum_cards, which takes a list of cards and returns the sum
+ of their values. Use a locally defined helper function that is tail recursive.*)
+fun sum_cards (card_list : card list) =
+    let fun sum_remaining (remaining_list : card list, sum : int) =
+            case remaining_list of
+                [] => sum
+             | x :: x' => sum_remaining(x', sum + card_value(x))
+    in
+        sum_remaining(card_list, 0)
+    end
+
+(* (f) Write a function score, which takes a card list (the held-cards) and an int
+ (the goal) and computes the score as described above *)
+fun score (held_cards : card list, goal : int ) =
+    let val sum = sum_cards(held_cards)
+        val prelim_score = if sum > goal then 3 * (sum - goal) else (goal - sum)
+        val same_color = all_same_color(held_cards)
+    in
+        if same_color then prelim_score div 2 else prelim_score
+    end
+            
+
