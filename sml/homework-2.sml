@@ -88,7 +88,7 @@ fun similar_names (substitutions : string list list, {first=first, middle=middle
         helper(first_names)
     end
 
-(* you may assume that Num is always used with values 2, 3, ..., 10
+(* 2. you may assume that Num is always used with values 2, 3, ..., 10
    though it will not really come up *)
 datatype suit = Clubs | Diamonds | Hearts | Spades
 datatype rank = Jack | Queen | King | Ace | Num of int
@@ -99,4 +99,25 @@ datatype move = Discard of card | Draw
 
 exception IllegalMove
 
-(* put your solutions for problem 2 here *)
+(*  (a) Write a function card_color, which takes a card and returns its color
+ (spades and clubs are black, diamonds and hearts are red).
+ Note: One case-expression is enough. *)
+fun card_color (card_suit, _) =
+    case card_suit of
+        Clubs => Black
+     | Spades => Black
+     | Hearts => Red
+     | Diamonds => Red
+
+(* (b) Write a function card_value, which takes a card and returns its value
+ (numbered cards have their number as the value, aces are 11, everything else is 10).
+ Note: One case-expression is enough.
+*)
+fun card_value (_, some_rank) =
+    case some_rank of
+        Jack => 10
+     | Queen => 10
+     | King => 10
+     | Ace => 11
+     | Num value => value
+
