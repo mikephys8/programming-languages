@@ -78,12 +78,15 @@ fun get_substitutions2 (substitutions : string list list, s : string) =
 Do not eliminate duplicates from the answer. Hint: Use a local helper function. Sample solution is
 around 10 lines.
 *)
-(* fun similar_names (substitutions : string list list, full_name: {first: string, middle: string, last: string}) = *)
-(*     (* [full_name] *) *)
-(*     let fun getFirstName (name : {first=first, middle=middle, last=last}) = *)
-(*             case name of *)
-(*                 first(blah) => blah *)
-            
+fun similar_names (substitutions : string list list, {first=first, middle=middle, last=last} ) =
+    let val first_names = first :: get_substitutions2(substitutions, first);
+        fun helper (first_name_list : string list) =
+            case first_name_list of
+                [] => []
+                   | x::x' => {first=x, middle=middle, last=last} :: helper(x')
+    in
+        helper(first_names)
+    end
 
 (* you may assume that Num is always used with values 2, 3, ..., 10
    though it will not really come up *)
