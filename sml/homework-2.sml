@@ -167,5 +167,35 @@ fun score (held_cards : card list, goal : int ) =
     in
         if same_color then prelim_score div 2 else prelim_score
     end
-            
+
+(* (g) Write a function officiate, which "runs a game." It takes a card list
+ (the card-list) a move list (what the player "does" at each point), and an int
+ (the goal) and returns the score at the end of the game after processing (some or all of)
+ the moves in the move list in order. Use a locally defined recursive helper function that
+ takes several arguments that together represent the current state of the game.
+ As described above:
+ The game starts with the held-cards being the empty list.
+ The game ends if there are no more moves. (The player chose to stop since the move list is empty.)
+ If the player discards some card c, play continues (i.e., make a recursive call) with the held-cards
+not having c and the card-list unchanged. If c is not in the held-cards, raise the IllegalMove
+exception.
+ If the player draws and the card-list is (already) empty, the game is over.
+ Else if drawing causes the sum of the held-cards to exceed the goal, the game is
+ over (after drawing). Else play continues with a larger held-cards and a smaller card-list.
+Sample solution for (g) is under 20 lines.) *)
+fun officiate (card_list : card list, move_list : move list, goal : int) =
+    let fun play(held_cards : card list, moves : move list, remaining_cards : card list) =
+            case moves of
+                [] => score(held_cards, goal)
+                   | x::x' => case x of
+                                  Discard card => play(remove_card(held_cards, card, IllegalMove), x', remaining_cards)
+                               |  Draw => case remaining_cards of
+                                              [] => score(held_cards, goal)
+                                            | y::y' => let val new_held_cards = y::held_cards in
+                                                           if sum_cards(new_held_cards) > goal then score(new_held_cards, goal)
+                                                           else play(new_held_cards, x', y')
+                                                       end
+    in
+        play([], move_list, card_list)
+    end
 
