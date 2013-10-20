@@ -121,3 +121,28 @@ fun card_value (_, some_rank) =
      | Ace => 11
      | Num value => value
 
+(* (c) Write a function remove_card, which takes a list of cards cs, a card c,
+ and an exception e. It returns a list that has all the elements of cs except c.
+ If c is in the list more than once, remove only the first one. If c is not in the list,
+ raise the exception e. You can compare cards with =. *)
+fun remove_card (cs : card list, c : card, e) =
+    let fun filter_card_list (card_list : card list) =
+        case card_list of
+            [] => []
+          | x :: x' => if x=c then x'
+                       else x :: filter_card_list(x')
+        val filtered_card_list = filter_card_list(cs)
+    in
+        if filtered_card_list = cs then raise e else filtered_card_list
+    end
+
+(* (d) Write a function all_same_color, which takes a list of cards and returns
+ true if all the cards in the list are the same color. Hint: An elegant solution
+ is very similar to one of the functions using nested pattern-matching in the lectures. *)
+fun all_same_color (cards : card list) =
+    case cards of
+        [] => true
+     | first :: [] => true
+     | first :: second :: rest => if card_color(first) = card_color(second)
+                                  then all_same_color(second :: rest)
+                                  else false
