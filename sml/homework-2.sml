@@ -199,3 +199,11 @@ fun officiate (card_list : card list, move_list : move list, goal : int) =
         play([], move_list, card_list)
     end
 
+
+
+(* 3. Challenge Problems:
+(a) Write score_challenge and officiate_challenge to be like their non-challenge counterparts
+ except each ace can have a value of 1 or 11 and score_challenge should always return the
+ least (i.e., best) possible score. (Note the game-ends-if-sum-exceeds-goal rule should
+ apply only if there is no sum that is less than the goal.) Hint: This is easier than
+ you might think. *)
