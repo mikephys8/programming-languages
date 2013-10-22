@@ -42,3 +42,10 @@ datatype typ = Anything
  String.sub to make a 1-2 line solution.*)
 fun only_capitals (str_list : string list) =
     List.filter (fn x => Char.isUpper(String.sub(x,0)))  str_list
+
+(* 2. Write a function longest_string1 that takes a string list and returns the
+ longest string in the list. If the list is empty, return "". In the case of a tie,
+ return the string closest to the beginning of the list. Use foldl, String.size,
+ and no recursion (other than the implementation of foldl is recursive).*)
+fun longest_string1 (str_list : string list) =
+    List.foldl (fn (x,y) => if String.size(x) > String.size(y) then x else y) "" str_list
