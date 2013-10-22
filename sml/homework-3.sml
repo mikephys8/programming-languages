@@ -49,3 +49,10 @@ fun only_capitals (str_list : string list) =
  and no recursion (other than the implementation of foldl is recursive).*)
 fun longest_string1 (str_list : string list) =
     List.foldl (fn (x,y) => if String.size(x) > String.size(y) then x else y) "" str_list
+
+(* 3. Write a function longest_string2 that is exactly like longest_string1 except
+ in the case of ties it returns the string closest to the end of the list. Your
+ solution should be almost an exact copy of longest_string1. Still use foldl and
+ String.size.*)
+fun longest_string2 (str_list : string list) =
+    List.foldl (fn (x,y) => if String.size(x) >= String.size(y) then x else y) "" str_list
