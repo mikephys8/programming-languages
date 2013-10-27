@@ -20,9 +20,18 @@ val test3b = longest_string2 ["Apple","bc","cc"] = "Apple"
 val test3c = longest_string2 ["Apple","bc","coconut"] = "coconut"
 val test3d = longest_string2 [] = ""
 
-(* val test4a= longest_string3 ["A","bc","C"] = "bc" *)
+val test4a= longest_string3 ["A","bc","C"] = "bc"
+val test4b = longest_string3 ["A","bc","cc"] = "bc"
+val test4c = longest_string3 ["Apple","bc","cc"] = "Apple"
+val test4d = longest_string3 ["Apple","bc","coconut"] = "coconut"
+val test4e = longest_string3 [] = ""
 
-(* val test4b= longest_string4 ["A","B","C"] = "C" *)
+val test4f = longest_string4 ["A","B","C"] = "C"
+val test4g = longest_string4 ["A","bc","C"] = "bc"
+val test4h = longest_string4 ["A","bc","cc"] = "cc"
+val test4i = longest_string4 ["Apple","bc","cc"] = "Apple"
+val test4j = longest_string4 ["Apple","bc","coconut"] = "coconut"
+val test4k = longest_string4 [] = ""
 
 (* val test5 = longest_capitalized ["A","bc","C"] = "A"; *)
 
