@@ -149,3 +149,25 @@ fun count_wild_and_variable_lengths p =
  the pattern. We care only about variable names; the constructor names are not relevant. *)
 fun count_some_var (s : string, p : pattern) =
     g (fn x => 0) (fn x => if x = s then 1 else 0) p
+
+(* 10. Write a function check_pat that takes a pattern and returns true if and only
+ if all the variables appearing in the pattern are distinct from each other
+ (i.e., use different strings). The constructor names are not relevant. Hints: The
+ sample solution uses two helper functions. The first takes a pattern and returns a
+ list of all the strings it uses for variables. Using foldl with a function that uses
+ append is useful in one case. The second takes a list of strings and decides if it
+ has repeats. List.exists may be useful. Sample solution is 15 lines. These are hints:
+ We are not requiring foldl and List.exists here, but they make it easier. *)
+fun check_pat (p : pattern) =
+    let fun get_strings pat =
+            case pat of
+                Variable z => [z]
+             | TupleP ps => List.foldl (fn (p,i) => (get_strings p) @ i) [] ps
+             | _ => []
+        fun is_unique (str_lst : string list) =
+            case str_lst of
+                [] => true
+              | x :: x' => if List.exists (fn y => y = x) x' then false else is_unique x'
+    in
+        is_unique (get_strings (p))
+    end
