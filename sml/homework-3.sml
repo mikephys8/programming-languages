@@ -80,3 +80,51 @@ fun longest_string3 (str_list : string list) =
 
 fun longest_string4 (str_list : string list) =
     longest_string_helper (fn (x,y) => x >= y) str_list
+
+(* 5. Write a function longest_capitalized that takes a string list and returns
+ the longest string in the list that begins with an uppercase letter, or "" if
+ there are no such strings. Assume all strings have at least 1 character. Use a
+ val-binding and the ML library’s o operator for composing functions. Resolve ties
+ like in problem 2.*)
+fun longest_capitalized str_list =
+    (longest_string1 o only_capitals) (str_list)
+
+(* 6. Write a function rev_string that takes a string and returns the string that
+ is the same characters in reverse order. Use ML’s o operator, the library function
+ rev for reversing lists, and two library functions in the String module. (Browse
+ the module documentation to find the most useful functions.) *)
+fun rev_string str =
+    (String.implode o rev o String.explode) str
+
+(* 7. Write a function first_answer of type (’a -> ’b option) -> ’a list -> ’b
+ (notice the 2 arguments are curried). The first argument should be applied to
+ elements of the second argument in order until the first time it returns SOME
+ v for some v and then v is the result of the call to first_answer. If the first
+ argument returns NONE for all list elements, then first_answer should raise the
+ exception NoAnswer. Hints: Sample solution is 5 lines and does nothing fancy. *)
+fun first_answer func1 some_list =
+    case some_list of
+        [] => raise NoAnswer
+      | x::x' => let val return_val = func1 x
+                 in case return_val of
+                        SOME x => x
+                      | _ => first_answer func1 x'
+                 end
+
+(* 8. Write a function all_answers of type (’a -> ’b list option) ->
+ ’a list -> ’b list option (notice the 2 arguments are curried).
+ The first argument should be applied to elements of the second argument.
+ If it returns NONE for any element, then the result for all_answers is NONE.
+ Else the calls to the first argument will have produced SOME lst1, SOME lst2,
+ ... SOME lstn and the result of all_answers is SOME lst where lst is lst1, lst2,
+ ..., lstn appended together (order doesn’t matter). Hints: The sample solution
+ is 8 lines. It uses a helper function with an accumulator and uses @. Note
+ all_answers f [] should evaluate to SOME []. *)
+fun all_answers func1 some_list =
+    let fun helper func lst lst_acc =
+            case lst of
+                [] => lst_acc
+              | x::x' => case func x of
+                             NONE => raise NoAnswer
+                           | SOME y => (helper func x' (y @ lst_acc))
+    in SOME (helper func1 some_list []) handle NoAnswer => NONE end
