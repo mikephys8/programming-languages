@@ -49,11 +49,14 @@ val test8 = all_answers (fn x => if x = 1 then SOME [x] else NONE) [2,3,4,5,6,7]
 val test8a = all_answers (fn x => if x = 1 then SOME [x] else NONE) [] = SOME []
 val test8b = all_answers (fn x => if x = 1 then SOME [x] else NONE) [] = SOME []
 
-(* val test9a = count_wildcards Wildcard = 1 *)
+val test9a = count_wildcards Wildcard = 1
+val test9a1 = count_wildcards (TupleP [Wildcard, Wildcard, Wildcard]) = 3
 
-(* val test9b = count_wild_and_variable_lengths (Variable("a")) = 1 *)
+val test9b = count_wild_and_variable_lengths (Variable("a")) = 1
+val test9b1 = count_wild_and_variable_lengths (TupleP [Variable("a"), Wildcard, Variable("blah")]) = 6
 
-(* val test9c = count_some_var ("x", Variable("x")) = 1; *)
+val test9c = count_some_var ("x", Variable("x")) = 1;
+val test9c1 = count_some_var ("x", TupleP [Variable("x"), Variable("y"), Variable("x"), Variable("xyz")]) = 2;
 
 (* val test10 = check_pat (Variable("x")) = true *)
 

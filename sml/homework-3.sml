@@ -2,30 +2,6 @@
 
 exception NoAnswer
 
-datatype pattern = Wildcard
-		 | Variable of string
-		 | UnitP
-		 | ConstP of int
-		 | TupleP of pattern list
-		 | ConstructorP of string * pattern
-
-datatype valu = Const of int
-	      | Unit
-	      | Tuple of valu list
-	      | Constructor of string * valu
-
-fun g f1 f2 p =
-    let 
-	val r = g f1 f2 
-    in
-	case p of
-	    Wildcard          => f1 ()
-	  | Variable x        => f2 x
-	  | TupleP ps         => List.foldl (fn (p,i) => (r p) + i) 0 ps
-	  | ConstructorP(_,p) => r p
-	  | _                 => 0
-    end
-
 (**** for the challenge problem only ****)
 
 datatype typ = Anything
@@ -128,3 +104,48 @@ fun all_answers func1 some_list =
                              NONE => raise NoAnswer
                            | SOME y => (helper func x' (y @ lst_acc))
     in SOME (helper func1 some_list []) handle NoAnswer => NONE end
+
+datatype pattern = Wildcard
+		 | Variable of string
+		 | UnitP
+		 | ConstP of int
+		 | TupleP of pattern list
+		 | ConstructorP of string * pattern
+
+datatype valu = Const of int
+	      | Unit
+	      | Tuple of valu list
+	      | Constructor of string * valu
+
+fun g f1 f2 p =
+    let 
+	val r = g f1 f2 
+    in
+	case p of
+	    Wildcard          => f1 ()
+	  | Variable x        => f2 x
+	  | TupleP ps         => List.foldl (fn (p,i) => (r p) + i) 0 ps
+	  | ConstructorP(_,p) => r p
+	  | _                 => 0
+    end
+
+(*f 9. (This problem uses the pattern datatype but is not really about pattern-matching.)
+ A function g has been provided to you.
+
+ (a) Use g to define a function count_wildcards that takes a pattern and returns how
+ many Wildcard patterns it contains. *)
+fun count_wildcards p =
+    g (fn x => 1) (fn x => 0) p
+
+(* (b) Use g to define a function count_wild_and_variable_lengths that takes a pattern
+ and returns the number of Wildcard patterns it contains plus the sum of the string
+ lengths of all the variables in the variable patterns it contains. (Use String.size.
+ We care only about variable names; the constructor names are not relevant.) *)
+fun count_wild_and_variable_lengths p =
+    g (fn x => 1) (fn x => String.size(x)) p
+
+(* (c) Use g to define a function count_some_var that takes a string and a pattern
+ (as a pair) and returns the number of times the string appears as a variable in
+ the pattern. We care only about variable names; the constructor names are not relevant. *)
+fun count_some_var (s : string, p : pattern) =
+    g (fn x => 0) (fn x => if x = s then 1 else 0) p
