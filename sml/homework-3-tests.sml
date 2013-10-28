@@ -47,7 +47,7 @@ val test7 = first_answer (fn x => if x > 3 then SOME x else NONE) [1,2,3,4,5] = 
 
 val test8 = all_answers (fn x => if x = 1 then SOME [x] else NONE) [2,3,4,5,6,7] = NONE
 val test8a = all_answers (fn x => if x = 1 then SOME [x] else NONE) [] = SOME []
-val test8b = all_answers (fn x => if x = 1 then SOME [x] else NONE) [] = SOME []
+val test8b = all_answers (fn x => if x = 1 then SOME [x] else NONE) [1] = SOME [1]
 
 val test9a = count_wildcards Wildcard = 1
 val test9a1 = count_wildcards (TupleP [Wildcard, Wildcard, Wildcard]) = 3
@@ -63,7 +63,26 @@ val test10a = check_pat (TupleP [Variable("x"), Variable("xy")]) = true
 val test10b = check_pat (Wildcard) = true
 val test10c = check_pat (TupleP [Variable("x"), Variable("x")]) = false
 
-(* val test11 = match (Const(1), UnitP) = NONE *)
+val test11 = match (Const(1), UnitP) = NONE
+val test11a = match (Const(1), Wildcard) = SOME []
+val test11b = match (Const(1), Variable("blah")) = SOME [("blah", Const(1))]
+val test11c = match (Const(1), UnitP) = NONE
+val test11d = match (Unit, UnitP) = SOME []
+val test11e = match (Const(23), ConstP(23)) = SOME []
+val test11f = match (Const(25), ConstP(23)) = NONE
+val test11g = match (Tuple [Const(1)], TupleP [Variable("blah")]) = SOME [("blah", Const(1))]
+val test11h = match (Tuple [Const(1), Const(5)], TupleP [Variable("blah"), ConstP(2)]) = NONE
+val test11i = match (Constructor("a",Const(1)), ConstructorP("a",Wildcard)) = SOME[]
+val test11j = match (Constructor("arcaf",Const(1)), ConstructorP("a",Wildcard)) = NONE
+val test11k = match (Constructor("a",Const(1)), ConstructorP("a",UnitP)) = NONE
+val test11l = match (Tuple [Const(1)], TupleP [Variable("blah"), Wildcard]) = NONE
+val test11m = match (Constructor("a",Const(1)), ConstructorP("a", Variable("blah"))) = SOME[("blah", Const(1))]
 
-(* val test12 = first_match Unit [UnitP] = SOME [] *)
+val test12 = first_match Unit [UnitP] = SOME []
+val test12a = first_match (Const(1)) [UnitP] = NONE
+val test12b = first_match (Const(1)) [UnitP, TupleP [], ConstP(1)] = SOME []
+val test12c = first_match (Const(1)) [UnitP,
+                                    Variable("Blah"),
+                                    TupleP [],
+                                    TupleP[ConstP(1)]] = SOME [("Blah", Const(1))]
 

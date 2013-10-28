@@ -168,6 +168,36 @@ fun check_pat (p : pattern) =
             case str_lst of
                 [] => true
               | x :: x' => if List.exists (fn y => y = x) x' then false else is_unique x'
-    in
-        is_unique (get_strings (p))
-    end
+    in is_unique (get_strings (p)) end
+
+(* 11. Write a function match that takes a valu * pattern and returns a (string * valu)
+ list option, namely NONE if the pattern does not match and SOME lst where lst is the
+ list of bindings if it does. Note that if the value matches but the pattern has no
+ patterns of the form Variable s, then the result is SOME []. Hints: Sample solution
+ has one case expression with 7 branches. The branch for tuples uses all_answers and
+ ListPair.zip. Sample solution is 13 lines. Remember to look above for the rules for
+ what patterns match what values, and what bindings they produce. These are hints:
+ We are not requiring all_answers and ListPair.zip here, but they make it easier. *)
+fun match (v : valu, p : pattern) =
+    case p of
+        Wildcard => SOME []
+      | Variable s => SOME [(s, v)]
+      | UnitP => (case v of 
+                     Unit => SOME [] 
+                   | _ => NONE)
+      | ConstP i => (case v of 
+                        Const j => if i = j then SOME [] else NONE
+                      | _ => NONE)
+      | TupleP lst => (case v of
+                      Tuple t_lst => (all_answers (fn (x,y) => match(x,y)) (ListPair.zipEq(t_lst, lst)) handle UnequalLengths => NONE)
+                                  | _ => NONE)
+      | ConstructorP (s, pat) => (case v of
+                                 Constructor (a, b) => if s = a then match(b, pat) else NONE
+                                   | _ => NONE)
+
+(* 12. Write a function first_match that takes a value and a list of patterns and returns a
+(string * valu) list option, namely NONE if no pattern in the list matches or SOME lst
+ where lst is the list of bindings for the first pattern in the list that matches.
+ Use first_answer and a handle-expression. Hints: Sample solution is 3 lines. *)
+fun first_match v p_lst =
+    SOME (first_answer (fn x => match(v, x)) p_lst) handle NoAnswer => NONE
