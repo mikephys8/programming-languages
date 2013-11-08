@@ -90,3 +90,28 @@
                 (cond [(equal? n (vector-length vec)) #f]
                       [(pair? (vector-ref vec n)) (if (equal? (car (vector-ref vec n)) v) (vector-ref vec n) (f (+ n 1)))]
                       [#t (f (+ n 1))]))]) (f 0)))
+
+; 10. Write a function cached-assoc that takes a list xs and a number n and returns a function that takes
+; one argument v and returns the same thing that (assoc v xs) would return. However, you should
+; use an n-element cache of recent results to possibly make this function faster than just calling assoc
+;(if xs is long and a few elements are returned often). The cache must be a Racket vector of length n
+; that is created by the call to cached-assoc (use Racket library function vector or make-vector) and
+; used-and-possibly-mutated each time the function returned by cached-assoc is called. Assume n is
+; positive.
+; Hints:
+; *In addition to a variable for holding the vector whose contents you mutate with vector-set!,
+; use a second variable to keep track of which cache slot will be replaced next. After modifying the
+; cache, increment this variable (with set!) or set it back to 0.
+; *To test your cache, it can be useful to add print expressions so you know when you are using the
+; cache and when you are not. But remove these print expressions before submitting your code.
+; *Sample solution is 15 lines.
+(define (cached-assoc xs n) (letrec ([cache (make-vector n #f)]
+                                     [cache-index 0])
+                              (lambda (v)
+                                (letrec ([cached (vector-assoc v cache)])
+                                  (if cached
+                                      (cdr cached)
+                                      (letrec ([newval (assoc v xs)])
+                                        (begin (set! cache-index (if (= (+ cache-index 1) n) 0 (+ cache-index 1)))
+                                               (vector-set! cache cache-index (cons v newval))
+                                               newval)))))))
