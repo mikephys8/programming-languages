@@ -121,7 +121,12 @@
 ; environment where each si is a variable bound to the result of evaluating the corresponding ei
 ; for 1 <= i <= n. The bindings are done sequentially, so that each ei is evaluated in an
 ; environment where s1 through si-1 have been previously bound to the values e1 through ei-1.
-(define (mlet* lstlst e2) "CHANGE")
+(define (mlet* lstlst e2) 
+  (if (null? lstlst)
+      e2
+      (let ([next-binding (car lstlst)]
+            [remaining-bindings (cdr lstlst)])
+      (mlet (car next-binding) (cdr next-binding) (mlet* remaining-bindings e2)))))
 
 (define (ifeq e1 e2 e3 e4) "CHANGE")
 
