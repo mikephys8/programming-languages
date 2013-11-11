@@ -128,7 +128,15 @@
             [remaining-bindings (cdr lstlst)])
       (mlet (car next-binding) (cdr next-binding) (mlet* remaining-bindings e2)))))
 
-(define (ifeq e1 e2 e3 e4) "CHANGE")
+; (c) Write a Racket function ifeq that takes four mupl expressions e1, e2, e3, and e4 and returns
+; a mupl expression that acts like ifgreater except e3 is evaluated if and only if e1 and e2 are
+; equal integers. Assume none of the arguments to ifeq use the mupl variables _x or _y. Use this
+; assumption so that when an expression returned from ifeq is evaluated, e1 and e2 are evaluated
+; exactly once each.
+(define (ifeq e1 e2 e3 e4)
+  (mlet* (list (cons "_x" e1) (cons "_y" e2))
+         (ifgreater (var "_x") (var "_y") e4 
+                    (ifgreater (var "_y") (var "_x") e4 e3))))
 
 ;; Problem 4
 
