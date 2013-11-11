@@ -102,15 +102,25 @@
          (let ([v (eval-under-env (isaunit-e e) env)])
            (if (aunit? v) (int 1) (int 0)))]
         [#t (error (format "bad MUPL expression: ~v" e))]))
-;(nameopt formal body)
+
 ;; Do NOT change
 (define (eval-exp e)
   (eval-under-env e null))
         
 ;; Problem 3
+;(a) Write a Racket function ifaunit that takes three mupl expressions e1, e2, and e3. It returns a
+; mupl expression that when run evaluates e1 and if the result is mupl's aunit then it evaluates e2
+; and that is the overall result, else it evaluates e3 and that is the overall result.
+; Sample solution: 1 line.
+(define (ifaunit e1 e2 e3) (ifgreater (isaunit e1) (int 0) e2 e3))
 
-(define (ifaunit e1 e2 e3) "CHANGE")
-
+; (b) Write a Racket function mlet* that takes a Racket list of Racket pairs
+; '((s1 . e1) ... (si . ei) ... (sn . en)) and a final mupl expression en+1.
+; In each pair, assume si is a Racket string and ei is a mupl expression.
+; mlet* returns a mupl expression whose value is en+1 evaluated in an
+; environment where each si is a variable bound to the result of evaluating the corresponding ei
+; for 1 <= i <= n. The bindings are done sequentially, so that each ei is evaluated in an
+; environment where s1 through si-1 have been previously bound to the values e1 through ei-1.
 (define (mlet* lstlst e2) "CHANGE")
 
 (define (ifeq e1 e2 e3 e4) "CHANGE")
