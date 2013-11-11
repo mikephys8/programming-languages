@@ -42,7 +42,7 @@
 ;; Do NOT change this function
 (define (envlookup env str); (int 1))
   (cond [(null? env) (error "unbound variable during evaluation" str)]
-        [(begin (print (car (car env))) (equal? (car (car env)) str)) (cdr (car env))]
+        [(equal? (car (car env)) str) (cdr (car env))]
         [#t (envlookup (cdr env) str)]))
 
 ;; Do NOT change the two cases given to you.  
@@ -51,7 +51,7 @@
 ;; "in real life" it would be a helper function of eval-exp.
 (define (eval-under-env e env)
   (cond [(var? e) 
-         (begin (print "var") (print env) (envlookup env (var-string e)))]
+         (envlookup env (var-string e))]
         [(add? e) 
          (let ([v1 (eval-under-env (add-e1 e) env)]
                [v2 (eval-under-env (add-e2 e) env)])
@@ -77,19 +77,17 @@
                [clos (eval-under-env (call-funexp e) env)]
                [funbody (fun-body (closure-fun clos))]
                [inval (fun-formal (closure-fun clos))])
-           (begin (print clos) (print (closure-env clos)) (if (closure? clos)
+           (if (closure? clos)
                (eval-under-env (fun-body (closure-fun clos)) (cons (cons inval arg) (closure-env clos)))
-               (error "MUPL can't call a function that isn't a closure"))))]
+               (error "MUPL can't call a function that isn't a closure")))]
         [(fun? e)
          (letrec ([funname (fun-nameopt e)]
                   [newenv (if funname (cons (cons funname clos) env) env)]
                   [clos (closure newenv (fun-body e))]
                   )
-                  (begin (print "newenv") (print newenv) clos))]
+                  clos)]
         [(closure? e)
-         (begin (print (closure-env e)) (print (append (closure-env e) env))
-                (closure (append (closure-env e) env) (closure-fun e))
-                )]
+         (closure (append (closure-env e) env) (closure-fun e))]
         [(apair? e)
          (let ([v1 (eval-under-env (apair-e1 e) env)]
                [v2 (eval-under-env (apair-e2 e) env)])
@@ -100,6 +98,9 @@
         [(snd? e)
          (let ([v (eval-under-env (snd-e e) env)])
            (if (apair? v) (apair-e2 v) (error "Can only call snd on a pair")))]
+        [(isaunit? e)
+         (let ([v (eval-under-env (isaunit-e e) env)])
+           (if (aunit? v) (int 1) (int 0)))]
         [#t (error (format "bad MUPL expression: ~v" e))]))
 ;(nameopt formal body)
 ;; Do NOT change
