@@ -49,6 +49,20 @@ class MyBoard < Board
     end
     @current_pos = nil
   end
+
+  # gets the information from the current piece about where it is and uses this
+  # to store the piece on the board itself.  Then calls remove_filled.
+  def store_current
+    locations = @current_block.current_rotation
+    displacement = @current_block.position
+    (0..(locations.size - 1 )).each{|index| 
+      current = locations[index];
+      @grid[current[1]+displacement[1]][current[0]+displacement[0]] = 
+      @current_pos[index]
+    }
+    remove_filled
+    @delay = [@delay - 2, 80].max
+  end
 end
 
 class MyTetris < Tetris
