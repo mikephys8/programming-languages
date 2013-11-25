@@ -51,7 +51,7 @@
 ;; "in real life" it would be a helper function of eval-exp.
 (define (eval-under-env e env)
   (cond [(var? e) 
-         (envlookup env (var-string e))]
+         (begin (print (var-string e)) (print " ") (print (envlookup env (var-string e))) (print (newline)) (envlookup env (var-string e)))]
         [(add? e) 
          (let ([v1 (eval-under-env (add-e1 e) env)]
                [v2 (eval-under-env (add-e2 e) env)])
@@ -93,14 +93,15 @@
                [v2 (eval-under-env (apair-e2 e) env)])
            (apair v1 v2))]
         [(fst? e)
-         (let ([v (eval-under-env (snd-e e) env)])
-           (if (apair? v) (apair-e1 v) (error "Can only call fst on a pair")))]
+         (let ([v (eval-under-env (fst-e e) env)])
+           (if (apair? v) (apair-e1 v) (begin (print v) (error "Can only call fst on a pair"))))]
         [(snd? e)
          (let ([v (eval-under-env (snd-e e) env)])
            (if (apair? v) (apair-e2 v) (error "Can only call snd on a pair")))]
         [(isaunit? e)
          (let ([v (eval-under-env (isaunit-e e) env)])
            (if (aunit? v) (int 1) (int 0)))]
+        [(aunit? e) e]
         [#t (error (format "bad MUPL expression: ~v" e))]))
 
 ;; Do NOT change
@@ -135,12 +136,23 @@
 ; exactly once each.
 (define (ifeq e1 e2 e3 e4)
   (mlet* (list (cons "_x" e1) (cons "_y" e2))
-         (ifgreater (var "_x") (var "_y") e4 
+         (ifgreater (var "_x") (var "_y") e4
                     (ifgreater (var "_y") (var "_x") e4 e3))))
 
 ;; Problem 4
-
-(define mupl-map "CHANGE")
+; (a) Bind to the Racket variable mupl-map a mupl function that acts like map (as we used extensively
+; in ML). Your function should be curried: it should take a mupl function and return a mupl
+; function that takes a mupl list and applies the function to every element of the list returning a
+; new mupl list. Recall a mupl list is aunit or a pair where the second component is a mupl list.
+(define mupl-map 
+  (fun #f "func"
+       (fun "mapr" "lst"
+            (ifaunit (var "lst")
+                     (aunit)
+                     (apair 
+                      (call (var "func") (fst (var "func")))
+                      (call (var "mapr") (snd (var "lst")))))
+            )))
 
 (define mupl-mapAddN 
   (mlet "map" mupl-map
