@@ -178,6 +178,9 @@ class Line < GeometryValue
   def shift(dx,dy)
     Line.new(@m, @b+dy-@m*dx)
   end
+  def intersect other
+    other.intersectLine self # will be NoPoints but follow double-dispatch
+  end
 end
 
 class VerticalLine < GeometryValue
@@ -196,6 +199,9 @@ class VerticalLine < GeometryValue
   end
   def shift(dx,dy)
     VerticalLine.new(@x+dx)
+  end
+  def intersect other
+    other.intersectVerticalLine self # will be NoPoints but follow double-dispatch
   end
 end
 
@@ -228,6 +234,9 @@ class LineSegment < GeometryValue
   def shift(dx,dy)
     LineSegment.new(@x1+dx, @y1+dy, @x2+dx, @y2+dy)
   end
+  def intersect other
+    other.intersectLineSegment self # will be NoPoints but follow double-dispatch
+  end
 end
 
 # Note: there is no need for getter methods for the non-value classes
@@ -238,6 +247,14 @@ class Intersect < GeometryExpression
   def initialize(e1,e2)
     @e1 = e1
     @e2 = e2
+  end
+  def preprocess_prog
+    self # no pre-processing to do here
+  end
+  def eval_prog env
+    e1_value = @e1.eval_prog(env)
+    e2_value = @e2.eval_prog(env)
+    e1_value.intersect(e2_value)
   end
 end
 
@@ -250,6 +267,14 @@ class Let < GeometryExpression
     @e1 = e1
     @e2 = e2
   end
+  def preprocess_prog
+    self # no pre-processing to do here
+  end
+  def eval_prog env
+    eval_value = @e1.eval_prog(env)
+    new_env = [[s, eval_value]] + env
+    @e2.eval_prog(new_env)
+  end
 end
 
 class Var < GeometryExpression
@@ -257,6 +282,9 @@ class Var < GeometryExpression
   # override any methods
   def initialize s
     @s = s
+  end
+  def preprocess_prog
+    self # no pre-processing to do here
   end
   def eval_prog env # remember: do not change this method
     pr = env.assoc @s
@@ -272,5 +300,12 @@ class Shift < GeometryExpression
     @dx = dx
     @dy = dy
     @e = e
+  end
+  def preprocess_prog
+    self # no pre-processing to do here
+  end
+  def eval_prog env
+    eval_value = @e.eval_prog(env)
+    eval_value.shift(dx,dy)
   end
 end
