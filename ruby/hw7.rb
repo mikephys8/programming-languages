@@ -154,9 +154,17 @@ class Point < GeometryValue
   # if self is the intersection of (1) some shape s and (2) 
   # the line containing seg, then we return the intersection of the 
   # shape s and the seg.  seg is an instance of LineSegment
-  # def intersectWithSegmentAsLineResult seg
-  #   self
-  # end
+  def intersectWithSegmentAsLineResult seg
+    if inbetween(@x, seg.x1, seg.x2) and inbetween(@y, seg.y1, seg.y2)
+      Point(@x, @y) # can prob return self here?
+    else
+      NoPoints.new
+    end
+  end
+
+  def inbetween v, end1, end2
+    (end1 - GeometryExpression::Epsilon <= v and v <= end2 + GeometryExpression::Epsilon) or (end2 - GeometryExpression::Epsilon <= v and v <= end1 + GeometryExpression::Epsilon)
+  end
 
 end
 
@@ -201,6 +209,9 @@ class Line < GeometryValue
   def intersectVerticalLine vline
     Point.new(vline.x, @m * vline.x + @b)
   end
+  def intersectWithSegmentAsLineResult seg
+    return seg
+  end
 end
 
 class VerticalLine < GeometryValue
@@ -236,6 +247,9 @@ class VerticalLine < GeometryValue
       NoPoints.new
     end
   end
+  def intersectWithSegmentAsLineResult seg
+    return seg
+  end
 end
 
 class LineSegment < GeometryValue
@@ -269,6 +283,42 @@ class LineSegment < GeometryValue
   end
   def intersect other
     other.intersectLineSegment self # will be NoPoints but follow double-dispatch
+  end
+  def intersectWithSegmentAsLineResult seg
+    seg2 = self
+    if real_close(seg.x1, seg.x2)
+      b = seg
+      a = seg2
+      if seg.y1 < seg2.y1
+        a = seg
+        b = seg2
+      end
+      if real_close(a.y2, b.y1)
+        Point(a.x2, a.y2) # Just touching
+      elsif a.y2 < b.y1
+        NoPoints.new # disjoint
+      elsif a.y2 > b.y2
+        LineSegment.new(b.x1, b.y1, b.x2, b.y2) # b inside a
+      else
+        LineSegment.new(b.x1, b.y1, a.x2, a.y2) # overlapping
+      end
+    else
+      a = seg2
+      b = seg
+      if seg.x1 < seg2.x1
+        a = seg
+        b = seg2
+      end
+      if real_close(a.x2, b.x1)
+        Point.new(a.x2, a.y2) # Just touching
+      elsif a.x2 < b.x1
+        NoPoints.new # disjoint
+      elsif a.x2 > b.x2
+        LineSegment.new(b.x1, b.y1, b.x2, b.y2) # b inside a
+      else
+        LineSegment.new(b.x1, b.y1, a.x2, a.y2) # overlapping
+      end
+    end
   end
 end
 
@@ -305,7 +355,7 @@ class Let < GeometryExpression
   end
   def eval_prog env
     eval_value = @e1.eval_prog(env)
-    new_env = [[s, eval_value]] + env
+    new_env = [[@s, eval_value]] + env
     @e2.eval_prog(new_env)
   end
 end
@@ -339,6 +389,6 @@ class Shift < GeometryExpression
   end
   def eval_prog env
     eval_value = @e.eval_prog(env)
-    eval_value.shift(dx,dy)
+    eval_value.shift(@dx,@dy)
   end
 end
