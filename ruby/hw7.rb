@@ -181,6 +181,26 @@ class Line < GeometryValue
   def intersect other
     other.intersectLine self # will be NoPoints but follow double-dispatch
   end
+
+  def intersectPoint p
+    p.intersectLine(self) # Already defined in Point
+  end
+  def intersectLine line
+    if real_close(@m, line.m)
+      if real_close(@b, line.b)
+        self
+      else
+        NoPoints.new
+      end
+    else
+      x = (line.b - @b) / (@m - line.m)
+      y = @m * x + @b
+      Point.new(x,y)
+    end
+  end
+  def intersectVerticalLine vline
+    Point.new(vline.x, @m * vline.x + @b)
+  end
 end
 
 class VerticalLine < GeometryValue
@@ -202,6 +222,19 @@ class VerticalLine < GeometryValue
   end
   def intersect other
     other.intersectVerticalLine self # will be NoPoints but follow double-dispatch
+  end
+  def intersectPoint p
+    p.intersectVerticalLine(self) # Already defined in Point
+  end
+  def intersectLine line
+    line.intersectVerticalLine(self)
+  end
+  def intersectVerticalLine vline
+    if real_close(@x, vline.x)
+      self
+    else
+      NoPoints.new
+    end
   end
 end
 
