@@ -117,6 +117,47 @@ class Point < GeometryValue
     @x = x
     @y = y
   end
+
+  def eval_prog env 
+    self # all values evaluate to self
+  end
+  def preprocess_prog
+    self # no pre-processing to do here
+  end
+  def shift(dx,dy)
+    Point.new(@x+dx, @y+dy)
+  end
+  def intersect other
+    other.intersectPoint self
+  end
+  def intersectPoint p
+    if real_close_point(@x,@y,p.x,p.y)
+      self
+    else
+      NoPoints.new
+    end
+  end
+  def intersectLine line
+    if real_close(@y, line.m * @x + line.b)
+      self
+    else
+      NoPoints.new
+    end
+  end
+  def intersectVerticalLine vline
+    if real_close(@x1, vline.x)
+      self
+    else
+      NoPoints.new
+    end
+  end
+  # if self is the intersection of (1) some shape s and (2) 
+  # the line containing seg, then we return the intersection of the 
+  # shape s and the seg.  seg is an instance of LineSegment
+  # def intersectWithSegmentAsLineResult seg
+  #   self
+  # end
+
 end
 
 class Line < GeometryValue
@@ -127,6 +168,16 @@ class Line < GeometryValue
     @m = m
     @b = b
   end
+
+  def eval_prog env 
+    self # all values evaluate to self
+  end
+  def preprocess_prog
+    self # no pre-processing to do here
+  end
+  def shift(dx,dy)
+    Line.new(@m, @b+dy-@m*dx)
+  end
 end
 
 class VerticalLine < GeometryValue
@@ -135,6 +186,16 @@ class VerticalLine < GeometryValue
   attr_reader :x
   def initialize x
     @x = x
+  end
+
+  def eval_prog env 
+    self # all values evaluate to self
+  end
+  def preprocess_prog
+    self # no pre-processing to do here
+  end
+  def shift(dx,dy)
+    VerticalLine.new(@x+dx)
   end
 end
 
@@ -150,6 +211,22 @@ class LineSegment < GeometryValue
     @y1 = y1
     @x2 = x2
     @y2 = y2
+  end
+
+  def eval_prog env 
+    self # all values evaluate to self
+  end
+  def preprocess_prog
+    if real_close_point(@x1,@y1,@x2,@y2)
+      Point.new(@x1,@y1)
+    elsif real_close(@x1, @x2) and @y2 < @y1 or @x2 < @x1
+      LineSegment.new(@x2, @y2, @x1, @y1)
+    else
+      self
+    end
+  end
+  def shift(dx,dy)
+    LineSegment.new(@x1+dx, @y1+dy, @x2+dx, @y2+dy)
   end
 end
 
