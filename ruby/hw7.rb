@@ -332,7 +332,7 @@ class Intersect < GeometryExpression
     @e2 = e2
   end
   def preprocess_prog
-    self # no pre-processing to do here
+    Intersect.new(@e1.preprocess_prog, @e2.preprocess_prog)
   end
   def eval_prog env
     e1_value = @e1.eval_prog(env)
@@ -351,7 +351,7 @@ class Let < GeometryExpression
     @e2 = e2
   end
   def preprocess_prog
-    self # no pre-processing to do here
+    Let.new(@s, @e1.preprocess_prog, @e2.preprocess_prog)
   end
   def eval_prog env
     eval_value = @e1.eval_prog(env)
