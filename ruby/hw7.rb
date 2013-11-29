@@ -385,7 +385,7 @@ class Shift < GeometryExpression
     @e = e
   end
   def preprocess_prog
-    self # no pre-processing to do here
+    Shift.new(@dx, @dy, @e.preprocess_prog)
   end
   def eval_prog env
     eval_value = @e.eval_prog(env)
